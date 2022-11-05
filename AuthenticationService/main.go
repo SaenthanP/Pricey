@@ -1,17 +1,11 @@
 package main
 
 import (
-	"os"
-
+	"authenticationservice/database"
 	"authenticationservice/handler"
-	"authenticationservice/model"
-	"fmt"
+	"authenticationservice/repository"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
-
-	"github.com/joho/godotenv"
 )
 
 type User struct {
@@ -20,18 +14,15 @@ type User struct {
 }
 
 func main() {
-	err := godotenv.Load()
+	db := database.SetDB()
 
-	if err != nil {
-		fmt.Println(err)
-	}
+	userRepository:=repository.NewUserRepository(db)
 
-	db, err := gorm.Open(postgres.Open(os.Getenv("CONNECTION_STRING")), &gorm.Config{})
-	db.AutoMigrate(&model.User{})
-	_ = err
+	test:=handler.NewUserHandler(userRepository)
+	
 	router := gin.Default()
 
-	router.GET("/api/ping", handler.RegisterUser)
+	router.GET("/api/ping", test.RegisterUser)
 
 	router.Run()
 }

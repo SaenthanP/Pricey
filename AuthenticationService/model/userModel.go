@@ -5,7 +5,7 @@ import (
 )
 
 type User struct {
-	UserId    uint `gorm:"primaryKey"`
+	UserId    string
 	Email     string
 	Username  string
 	LastLogin time.Time

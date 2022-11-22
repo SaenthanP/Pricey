@@ -1,8 +1,9 @@
 package repository
 
 import (
-	"gorm.io/gorm"
 	"authenticationservice/model"
+
+	"gorm.io/gorm"
 )
 
 type UserRepository struct {
@@ -13,10 +14,7 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 	return &UserRepository{db}
 }
 
+func (userRepository *UserRepository) CreateUser(user *model.User) {
 
-func (userRepository *UserRepository) CreateUser(){
-	user:=&model.User{}
-
-	user.Email="saenthan"
 	userRepository.db.Create(user)
 }

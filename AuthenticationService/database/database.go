@@ -1,6 +1,7 @@
 package database
 
 import (
+	"fmt"
 	"os"
 
 	"authenticationservice/model"
@@ -12,8 +13,10 @@ import (
 )
 
 func SetDB() (db *gorm.DB) {
+	fmt.Println("reach")
 	godotenv.Load()
 	db, err := gorm.Open(postgres.Open(os.Getenv("CONNECTION_STRING")), &gorm.Config{})
+	fmt.Println(err)
 	db.AutoMigrate(&model.User{})
 	_ = err
 

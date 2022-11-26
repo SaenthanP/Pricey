@@ -22,5 +22,5 @@ func main() {
 	router.GET("/api/ping", userHandler.RegisterUser)
 	router.GET("/callback", userHandler.Callback)
 
-	router.Run()
+	router.Run(":8080")
 }

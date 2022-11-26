@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -23,6 +24,7 @@ func NewServer(userService *service.UserService, config *config.Config) *Server 
 
 func (server *Server) RegisterUser(c *gin.Context) {
 	url := server.config.GoogleConfig.AuthCodeURL("pseudo-random")
+	
 	c.Redirect(http.StatusTemporaryRedirect, url)
 }
 
@@ -53,5 +55,7 @@ func (server *Server) Callback(c *gin.Context) {
 
 	userToCreate := dto.ToCreateUserDto(oauthResponse)
 
-	server.userService.CreateUser(userToCreate)
+	jwt_token := server.userService.CreateUser(userToCreate)
+	c.JSON(http.StatusOK, jwt_token)
+
 }

@@ -15,7 +15,7 @@ func NewUserSevice(userRepository *repository.UserRepository) *UserService {
 	return &UserService{userRepository}
 }
 
-func (userService *UserService) CreateUser(userToCreate *dto.CreateUserDto) {
+func (userService *UserService) CreateUser(userToCreate *dto.CreateUserDto) string {
 
 	user := &model.User{}
 	user.Email = userToCreate.Email
@@ -25,8 +25,10 @@ func (userService *UserService) CreateUser(userToCreate *dto.CreateUserDto) {
 		userService.userRepository.CreateUser(user)
 	}
 
-	user=userService.userRepository.LoginUser(user.Email)
+	user = userService.userRepository.LoginUser(user.Email)
 
-	fmt.Println(user)
-	token:=
+	token := user.GenerateJwt()
+	fmt.Println(token)
+
+	return token
 }

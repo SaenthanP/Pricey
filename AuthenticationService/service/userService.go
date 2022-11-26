@@ -4,6 +4,7 @@ import (
 	"authenticationservice/dto"
 	"authenticationservice/model"
 	"authenticationservice/repository"
+	"fmt"
 )
 
 type UserService struct {
@@ -19,5 +20,13 @@ func (userService *UserService) CreateUser(userToCreate *dto.CreateUserDto) {
 	user := &model.User{}
 	user.Email = userToCreate.Email
 	user.Username = userToCreate.Username
-	userService.userRepository.CreateUser(user)
+
+	if userService.userRepository.GetUserByEmail(user.Email) == nil {
+		userService.userRepository.CreateUser(user)
+	}
+
+	user=userService.userRepository.LoginUser(user.Email)
+
+	fmt.Println(user)
+	token:=
 }

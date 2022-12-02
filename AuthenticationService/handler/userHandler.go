@@ -24,10 +24,13 @@ func NewServer(userService *service.UserService, config *config.Config) *Server 
 
 func (server *Server) RegisterUser(c *gin.Context) {
 	url := server.config.GoogleConfig.AuthCodeURL("pseudo-random")
-	
+
 	c.Redirect(http.StatusTemporaryRedirect, url)
 }
+func (server *Server) Test(c *gin.Context) {
+	c.JSON(http.StatusOK, "test")
 
+}
 func (server *Server) Callback(c *gin.Context) {
 	token, err := server.config.GoogleConfig.Exchange(context.Background(), c.Request.FormValue("code"))
 

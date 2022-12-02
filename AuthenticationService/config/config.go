@@ -14,7 +14,7 @@ type Config struct {
 func NewConfig() *Config {
 	return &Config{
 		&oauth2.Config{
-			RedirectURL:  "http://localhost:8080/callback",
+			RedirectURL:  "http://pricey.com/api/callback",
 			ClientID:     os.Getenv("O_AUTH_CLIENT_ID"),
 			ClientSecret: os.Getenv("O_AUTH_CLIENT_SECRET"),
 			Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"},

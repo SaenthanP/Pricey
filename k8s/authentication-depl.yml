@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authentication-depl
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: authenticationservice
+  template:
+    metadata: 
+      labels: 
+        app: authenticationservice
+    spec: 
+      containers:
+        - name: authenticationservice
+          image: saenthan/authenticationservice:latest  
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 8080   
+          env:
+            - name: CONNECTION_STRING
+              value: "host=pricey-db-clusterip-srv user=postgres password=postgres dbname=user port=5432"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authentication-clusterip-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: authenticationservice
+  ports:
+  - name: authenticationservice
+    protocol: TCP
+    port: 8080
+    targetPort: 8080

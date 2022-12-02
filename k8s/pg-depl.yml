@@ -1,0 +1,57 @@
+# PostgreSQL StatefulSet
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pricey-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app:  pricey-db
+  template:
+    metadata:
+      labels:
+        app:  pricey-db
+    spec:
+      containers:
+      - name:  pricey-db
+        image: postgres:latest
+        ports:
+          - containerPort: 5432
+        volumeMounts:
+        - name:  pricey-db-disk
+          mountPath: /data
+        env:
+        - name: POSTGRES_PASSWORD
+          value: postgres
+        - name: PGDATA
+          value: /data/pgdata
+      volumes:
+      - name: pricey-db-disk
+        persistentVolumeClaim:
+          claimName: pricey-db-disk-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name:  pricey-db-clusterip-srv
+spec:
+  type: ClusterIP
+  selector:
+    app:  pricey-db
+  ports:
+  - name:  pricey-db
+    port: 5432
+    targetPort: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pricey-db-loadbalancer
+spec:
+  type: LoadBalancer
+  selector:
+    app: pricey-db
+  ports:
+  - port: 5432
+    targetPort: 5432

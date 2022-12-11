@@ -1,11 +1,11 @@
 package main
 
 import (
-	"scraperservice/database"
+	"linkservice/database"
 
-	"scraperservice/handler"
-	"scraperservice/repository"
-	"scraperservice/service"
+	"linkservice/handler"
+	"linkservice/repository"
+	"linkservice/service"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,12 +14,16 @@ func main() {
 	db := database.SetDB()
 
 	linkRepository := repository.NewLinkRepository(db)
-	linkService := service.NewLinkSevice(linkRepository)
+	approvedLinkRepository := repository.NewApprovedLinkRepository(db)
+	userToLinkRepository := repository.NewUserToLinkRepository(db)
+	linkService := service.NewLinkSevice(linkRepository, approvedLinkRepository, userToLinkRepository)
+
 	linkHandler := handler.NewServer(linkService)
 
 	router := gin.Default()
 
-	router.POST("/api/create_url", linkHandler.CreateLink)
+	router.POST("/api/createlink", linkHandler.CreateLink)
+	router.GET("/api/geturl", linkHandler.GetLink)
 
 	router.Run(":8081")
 }

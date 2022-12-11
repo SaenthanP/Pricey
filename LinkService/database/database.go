@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"scraperservice/model"
+	"linkservice/model"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

@@ -1,4 +1,4 @@
-module scraperservice
+module linkservice
 
 go 1.19
 

@@ -1,6 +1,6 @@
 package dto
 
 
-type Link struct{
+type CreateLinkDto struct{
 	Link string
 }

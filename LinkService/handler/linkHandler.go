@@ -27,13 +27,12 @@ func (server *Server) CreateLink(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(header.UserId)
 
 	if err := c.BindJSON(&requestBody); err != nil {
 		fmt.Println(err)
 	}
 
-	fmt.Println(requestBody)
+	server.linkService.CreateLink(&requestBody,header.UserId)
 	c.JSON(http.StatusOK, "test")
 
 }

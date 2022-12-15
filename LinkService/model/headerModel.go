@@ -1,5 +1,5 @@
 package model
 
 type Header struct {
-    UserId int `header:"UserId" binding:"required"`
+    UserId string `header:"UserId" binding:"required"`
 }

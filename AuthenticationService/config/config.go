@@ -14,6 +14,7 @@ type Config struct {
 func NewConfig() *Config {
 	return &Config{
 		&oauth2.Config{
+			//http://localhost:8080/api/callback
 			RedirectURL:  "http://pricey.com/api/callback",
 			ClientID:     os.Getenv("O_AUTH_CLIENT_ID"),
 			ClientSecret: os.Getenv("O_AUTH_CLIENT_SECRET"),

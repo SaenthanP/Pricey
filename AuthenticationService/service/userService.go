@@ -26,7 +26,7 @@ func (userService *UserService) CreateUser(userToCreate *dto.CreateUserDto) stri
 	}
 
 	user = userService.userRepository.LoginUser(user.Email)
-
+	fmt.Println(user.UserId)
 	token := user.GenerateJwt()
 	fmt.Println(token)
 

@@ -28,7 +28,9 @@ func (linkService *LinkService) CreateLink(createLinkDto *dto.CreateLinkDto, use
 	if approvedUrl != nil {
 		linkFromDb := linkService.linkRepository.DoesLinkExist(createLinkDto.Link)
 		if linkFromDb == nil {
-			linkFromDb = linkService.linkRepository.CreateLink(approvedUrl)
+			linkFromDb = linkService.linkRepository.CreateLink(approvedUrl,createLinkDto.Link)
+			linkService.userToLinkRepository.CreateLinkToUser(userId, linkFromDb.LinkId.String())
+		} else if !linkService.userToLinkRepository.DoesLinkExistToUser(userId, linkFromDb.LinkId.String()) {
 			linkService.userToLinkRepository.CreateLinkToUser(userId, linkFromDb.LinkId.String())
 		}
 	}

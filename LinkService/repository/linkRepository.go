@@ -25,10 +25,10 @@ func (linkRepository *LinkRepository) DoesLinkExist(url string) *model.Link {
 	return link
 }
 
-func (linkRepository *LinkRepository) CreateLink(approvedUrl *model.ApprovedLink) *model.Link {
+func (linkRepository *LinkRepository) CreateLink(approvedUrl *model.ApprovedLink, url string) *model.Link {
 
 	link := &model.Link{}
-	link.Link = approvedUrl.Link
+	link.Link = url
 	link.ApprovedLinkId = approvedUrl.ApprovedLinkId
 
 	linkRepository.db.Create(link)

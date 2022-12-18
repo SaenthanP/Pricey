@@ -3,9 +3,10 @@ package handler
 import (
 	"fmt"
 	"linkservice/dto"
+	"linkservice/model"
 	"linkservice/service"
 	"net/http"
-	"linkservice/model"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,22 +20,28 @@ func NewServer(linkService *service.LinkService) *Server {
 
 func (server *Server) CreateLink(c *gin.Context) {
 	var requestBody dto.CreateLinkDto
-   // bind the headers to data
-   header := &model.Header{}
+	// bind the headers to data
+	header := &model.Header{}
 
-   if err := c.ShouldBindHeader(header); err != nil {
+	if err := c.ShouldBindHeader(header); err != nil {
 		c.JSON(400, err.Error())
 		return
 	}
-
 
 	if err := c.BindJSON(&requestBody); err != nil {
 		fmt.Println(err)
 	}
 
-	server.linkService.CreateLink(&requestBody,header.UserId)
-	c.JSON(http.StatusOK, "test")
+	link, err := server.linkService.CreateLink(&requestBody, header.UserId)
 
+	//Must break it out if the resource already exists later
+	if len(err) == 0 {
+		 c.JSON(http.StatusCreated, link)
+		 return
+	}
+
+	 c.JSON(http.StatusInternalServerError, err)
+	 return
 }
 func (server *Server) GetLink(c *gin.Context) {
 

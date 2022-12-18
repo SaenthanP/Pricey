@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"linkservice/dto"
+	"linkservice/model"
 	"linkservice/repository"
 	"net/url"
 )
@@ -19,24 +20,28 @@ func NewLinkSevice(linkRepository *repository.LinkRepository,
 	return &LinkService{linkRepository, approvedLinkRepository, userToLinkRepository}
 }
 
-func (linkService *LinkService) CreateLink(createLinkDto *dto.CreateLinkDto, userId string) {
+func (linkService *LinkService) CreateLink(createLinkDto *dto.CreateLinkDto, userId string) (*model.Link, string) {
 	u, err := url.Parse(createLinkDto.Link)
-	fmt.Println(u.Host)
-
-	approvedUrl := linkService.approvedLinkRepository.DoesLinkExist(u.Host)
-
-	if approvedUrl != nil {
-		linkFromDb := linkService.linkRepository.DoesLinkExist(createLinkDto.Link)
-		if linkFromDb == nil {
-			linkFromDb = linkService.linkRepository.CreateLink(approvedUrl,createLinkDto.Link)
-			linkService.userToLinkRepository.CreateLinkToUser(userId, linkFromDb.LinkId.String())
-		} else if !linkService.userToLinkRepository.DoesLinkExistToUser(userId, linkFromDb.LinkId.String()) {
-			linkService.userToLinkRepository.CreateLinkToUser(userId, linkFromDb.LinkId.String())
-		}
-	}
 
 	if err != nil {
-		fmt.Println(err)
+		return nil, err.Error()
 	}
 
+	approvedUrl := linkService.approvedLinkRepository.DoesLinkExist(u.Host)
+	if approvedUrl == nil {
+		err := fmt.Sprintf("An approved Url does not exist for user provided url: %s", createLinkDto.Link)
+		return nil, err
+	}
+
+	linkFromDb := linkService.linkRepository.DoesLinkExist(createLinkDto.Link)
+
+	if linkFromDb == nil {
+		linkFromDb = linkService.linkRepository.CreateLink(approvedUrl, createLinkDto.Link)
+		linkService.userToLinkRepository.CreateLinkToUser(userId, linkFromDb.LinkId.String())
+	} else if !linkService.userToLinkRepository.DoesLinkExistToUser(userId, linkFromDb.LinkId.String()) {
+		linkService.userToLinkRepository.CreateLinkToUser(userId, linkFromDb.LinkId.String())
+	}
+
+	linkFromDb.ApprovedLink=*approvedUrl
+	return linkFromDb, ""
 }

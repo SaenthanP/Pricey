@@ -16,7 +16,7 @@ func SetDB() (db *gorm.DB) {
 	godotenv.Load()
 	db, err := gorm.Open(postgres.Open(os.Getenv("CONNECTION_STRING")), &gorm.Config{})
 	fmt.Println(err)
-
+	db.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";")
 	db.AutoMigrate(&model.ApprovedLink{})
 	db.AutoMigrate(&model.Link{})
 	db.AutoMigrate(&model.UserToLink{})

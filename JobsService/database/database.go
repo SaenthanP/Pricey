@@ -1,10 +1,9 @@
 package database
 
 import (
-	"fmt"
 	"os"
 
-	"authenticationservice/model"
+	"jobservice/model"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -15,9 +14,8 @@ import (
 func SetDB() (db *gorm.DB) {
 	godotenv.Load()
 	db, err := gorm.Open(postgres.Open(os.Getenv("CONNECTION_STRING")), &gorm.Config{})
-	fmt.Println(err)
 	db.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";")
-	db.AutoMigrate(&model.User{})
+	db.AutoMigrate(&model.Job{})
 	_ = err
 
 	return db

@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: link-depl
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: linkservice
+  template:
+    metadata: 
+      labels: 
+        app: linkservice
+    spec: 
+      containers:
+        - name: linkservice
+          image: saenthan/linkservice:latest  
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 8080   
+          env:
+            - name: CONNECTION_STRING
+              value: "host=pricey-db-clusterip-srv user=postgres password=postgres dbname=links port=5432"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: link-clusterip-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: linkservice
+  ports:
+  - name: linkservice
+    protocol: TCP
+    port: 8081
+    targetPort: 8081

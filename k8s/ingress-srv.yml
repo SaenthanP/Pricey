@@ -17,5 +17,12 @@ spec:
                 name: authentication-clusterip-srv
                 port:
                   number: 8080
+          - path: /api/link
+            pathType: Prefix
+            backend:
+              service:
+                name: link-clusterip-srv
+                port:
+                  number: 8081
           
      

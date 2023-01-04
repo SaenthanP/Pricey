@@ -5,12 +5,14 @@ import (
 	"runtime"
 	"scrapeservice/model"
 	"scrapeservice/service"
-	"time"
 )
 
+/*
+Maybe feature a dashbaord with live data of what is in a worker, current nubmer of workers,
+*/
 func main() {
 
-	workerPool := service.NewWorkerPool(2)
+	workerPool := service.NewWorkerPool(5)
 
 	for index := 0; index < workerPool.MaxWorkers; index++ {
 		workerPool.WG.Add(1)
@@ -30,7 +32,7 @@ func main() {
 	// 	}
 	// }()
 
-	time.Sleep(5 * time.Second)
+	// time.Sleep(5 * time.Second)
 
 	job1 := model.Job{JobType: "scrape", Executor: nil}
 
@@ -65,7 +67,10 @@ func main() {
 	}
 	runtime.Goexit()
 	workerPool.WG.Wait()
-
+	/*
+		Listen to terminating command, send to a channel that it is done, have the workers listen to this then return.
+		Close the channels
+	*/
 	//TODO create a channel, and use it to end the main go loop
 	fmt.Println("Exit")
 }

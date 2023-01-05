@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"linkservice/asyncmessaging"
 	"linkservice/dto"
 	"linkservice/model"
 	"linkservice/repository"
@@ -9,15 +10,16 @@ import (
 )
 
 type LinkService struct {
+	asyncMessagingClient   *asyncmessaging.AsyncMessageClient
 	linkRepository         *repository.LinkRepository
 	approvedLinkRepository *repository.ApprovedLinkRepository
 	userToLinkRepository   *repository.UserToLinkRepository
 }
 
-func NewLinkSevice(linkRepository *repository.LinkRepository,
+func NewLinkSevice(asyncMessagingClient *asyncmessaging.AsyncMessageClient, linkRepository *repository.LinkRepository,
 	approvedLinkRepository *repository.ApprovedLinkRepository,
 	userToLinkRepository *repository.UserToLinkRepository) *LinkService {
-	return &LinkService{linkRepository, approvedLinkRepository, userToLinkRepository}
+	return &LinkService{asyncMessagingClient, linkRepository, approvedLinkRepository, userToLinkRepository}
 }
 
 func (linkService *LinkService) CreateLink(createLinkDto *dto.CreateLinkDto, userId string) (*model.Link, string) {
@@ -42,6 +44,11 @@ func (linkService *LinkService) CreateLink(createLinkDto *dto.CreateLinkDto, use
 		linkService.userToLinkRepository.CreateLinkToUser(userId, linkFromDb.LinkId.String())
 	}
 
-	linkFromDb.ApprovedLink=*approvedUrl
+	linkFromDb.ApprovedLink = *approvedUrl
 	return linkFromDb, ""
+}
+
+func (linkService *LinkService) TestCallFromRpc() {
+	fmt.Println("Test Called")
+	linkService.asyncMessagingClient.CallScrape()
 }

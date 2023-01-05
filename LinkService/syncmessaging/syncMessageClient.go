@@ -17,7 +17,7 @@ type server struct {
 
 var _linkService *service.LinkService
 
-func NewAsyncMessageClient(linkService *service.LinkService) {
+func NewSyncMessageClient(linkService *service.LinkService) {
 	_linkService = linkService
 }
 
@@ -41,7 +41,6 @@ func SetupGrpc() {
 
 func (s *server) Add(ctx context.Context, request *proto.Request) (*proto.Response, error) {
 	a, b := request.GetA(), request.GetB()
-	fmt.Println("working???")
 	result := a + b
 	_linkService.TestCallFromRpc()
 	return &proto.Response{Result: result}, nil

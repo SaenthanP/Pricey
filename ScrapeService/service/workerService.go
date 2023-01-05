@@ -1,7 +1,7 @@
 package service
 
 import (
-	"fmt"
+	"log"
 	"scrapeservice/model"
 	"sync"
 	"time"
@@ -17,7 +17,7 @@ func Worker(jobs chan model.Job) {
 	for {
 		select {
 		case <-jobs:
-			fmt.Println("works????????")
+			log.Println("Worker called")
 			time.Sleep(10 * time.Second)
 
 		}

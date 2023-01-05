@@ -2,6 +2,7 @@ package asyncmessaging
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
@@ -33,6 +34,8 @@ func (messageClient AsyncMessageClient) CallScrape() {
 	)
 
 	if err != nil {
-		fmt.Printf("Something went wrong trying to send scrape message %v", err)
+		log.Fatalf("Something went wrong trying to send scrape message %v", err)
 	}
+
+	log.Println("Successfully published message")
 }

@@ -6,6 +6,7 @@ import (
 	"linkservice/dto"
 	"linkservice/model"
 	"linkservice/repository"
+	"log"
 	"net/url"
 )
 
@@ -49,6 +50,6 @@ func (linkService *LinkService) CreateLink(createLinkDto *dto.CreateLinkDto, use
 }
 
 func (linkService *LinkService) TestCallFromRpc() {
-	fmt.Println("Test Called")
+	log.Println("TestCallFromRpc")
 	linkService.asyncMessagingClient.CallScrape()
 }

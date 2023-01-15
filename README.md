@@ -3,7 +3,7 @@ A distributed system application to scan for price drops.
 ## Architecture
 ![Architecture](graphics/architecture.png)
 ### Language
-* GoLang
+* Golang
 ### DevOps
 * Docker used for containerization
 * Kubernetes used for orchestration

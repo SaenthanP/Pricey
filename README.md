@@ -13,7 +13,7 @@ A distributed system application to scan for price drops.
 * Kafka streams for streaming links into scraper service for processing
 * GRPC to trigger jobs when needed
 ### Database
-* Postgres Database to keep track of users, links, jobs
+* Postgres Databases to keep track of users, links, jobs
 ### Microservices
 * Authentication Service
   * Handles logins, registration and authentication

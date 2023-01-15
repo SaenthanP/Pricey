@@ -27,8 +27,26 @@ func (server *Server) RegisterUser(c *gin.Context) {
 
 	c.Redirect(http.StatusTemporaryRedirect, url)
 }
-func (server *Server) Test(c *gin.Context) {
-	c.JSON(http.StatusOK, "test")
+func (server *Server) VerifyToken(c *gin.Context) {
+
+	// bind the headers to data
+	header := &model.Header{}
+
+	if err := c.ShouldBindHeader(header); err != nil {
+		c.JSON(400, err.Error())
+		return
+	}
+	isTokenValid, id := server.userService.TokenCheck(header.Token)
+	if isTokenValid {
+		c.Header("UserId", id.String())
+		c.JSON(http.StatusOK, "valid")
+		return
+	} else {
+		c.Header("UserId", "")
+		c.JSON(401, "Not authorized")
+		return
+
+	}
 
 }
 func (server *Server) Callback(c *gin.Context) {

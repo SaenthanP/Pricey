@@ -4,6 +4,8 @@ go 1.19
 
 require (
 	github.com/gin-gonic/gin v1.8.1
+	github.com/gofrs/uuid v4.0.0+incompatible
+	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/joho/godotenv v1.4.0
 	golang.org/x/oauth2 v0.1.0
 	gorm.io/driver/postgres v1.4.5
@@ -12,7 +14,6 @@ require (
 
 require (
 	cloud.google.com/go/compute v1.7.0 // indirect
-	github.com/golang-jwt/jwt/v4 v4.4.2 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 )

@@ -31,9 +31,9 @@ func (userRepository *UserRepository) GetUserByEmail(email string) *model.User {
 
 }
 
-func (userRepository *UserRepository) LoginUser(email string) *model.User{
+func (userRepository *UserRepository) LoginUser(email string) *model.User {
 
-	userRepository.db.Model(&model.User{}).Where("email=?",email).Update("last_login", time.Now()).Debug()
+	userRepository.db.Model(&model.User{}).Where("email=?", email).Update("last_login", time.Now()).Debug()
 	user := userRepository.GetUserByEmail(email)
 
 	return user

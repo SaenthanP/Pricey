@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"jobservice/database"
 	"jobservice/proto"
@@ -19,20 +18,12 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	client := proto.NewAddServiceClient(conn)
-	for index := 0; index < 100; index++ {
-		req := &proto.Request{A: int64(2), B: int64(3)}
-
-		if response, err := client.Add(context.Background(), req); err == nil {
-			fmt.Println(response.Result)
-		}
-	}
+	protoClient := proto.NewCallScrapeServiceClient(conn)
 
 	db := database.SetDB()
 	jobRepository := repository.NewJobRepository(db)
 
-	jobService := service.NewJobService(jobRepository)
-	jobService.Test()
+	jobService := service.NewJobService(protoClient, jobRepository)
 
 	jobService.RetrieveJobs()
 	runtime.Goexit()

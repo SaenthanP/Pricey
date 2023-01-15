@@ -1,6 +1,7 @@
 package model
 
-type Job struct{
-	JobType string
-	Executor func() 
+type Job struct {
+	JobType  string
+	Executor Executor
+	MetaData []byte
 }

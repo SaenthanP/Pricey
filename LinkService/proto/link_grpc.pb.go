@@ -18,86 +18,86 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// AddServiceClient is the client API for AddService service.
+// CallScrapeServiceClient is the client API for CallScrapeService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type AddServiceClient interface {
-	Add(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
+type CallScrapeServiceClient interface {
+	CallScrape(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
 }
 
-type addServiceClient struct {
+type callScrapeServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewAddServiceClient(cc grpc.ClientConnInterface) AddServiceClient {
-	return &addServiceClient{cc}
+func NewCallScrapeServiceClient(cc grpc.ClientConnInterface) CallScrapeServiceClient {
+	return &callScrapeServiceClient{cc}
 }
 
-func (c *addServiceClient) Add(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
+func (c *callScrapeServiceClient) CallScrape(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/proto.AddService/Add", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.CallScrapeService/CallScrape", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// AddServiceServer is the server API for AddService service.
-// All implementations must embed UnimplementedAddServiceServer
+// CallScrapeServiceServer is the server API for CallScrapeService service.
+// All implementations must embed UnimplementedCallScrapeServiceServer
 // for forward compatibility
-type AddServiceServer interface {
-	Add(context.Context, *Request) (*Response, error)
-	mustEmbedUnimplementedAddServiceServer()
+type CallScrapeServiceServer interface {
+	CallScrape(context.Context, *Request) (*Response, error)
+	mustEmbedUnimplementedCallScrapeServiceServer()
 }
 
-// UnimplementedAddServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedAddServiceServer struct {
+// UnimplementedCallScrapeServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedCallScrapeServiceServer struct {
 }
 
-func (UnimplementedAddServiceServer) Add(context.Context, *Request) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Add not implemented")
+func (UnimplementedCallScrapeServiceServer) CallScrape(context.Context, *Request) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CallScrape not implemented")
 }
-func (UnimplementedAddServiceServer) mustEmbedUnimplementedAddServiceServer() {}
+func (UnimplementedCallScrapeServiceServer) mustEmbedUnimplementedCallScrapeServiceServer() {}
 
-// UnsafeAddServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to AddServiceServer will
+// UnsafeCallScrapeServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to CallScrapeServiceServer will
 // result in compilation errors.
-type UnsafeAddServiceServer interface {
-	mustEmbedUnimplementedAddServiceServer()
+type UnsafeCallScrapeServiceServer interface {
+	mustEmbedUnimplementedCallScrapeServiceServer()
 }
 
-func RegisterAddServiceServer(s grpc.ServiceRegistrar, srv AddServiceServer) {
-	s.RegisterService(&AddService_ServiceDesc, srv)
+func RegisterCallScrapeServiceServer(s grpc.ServiceRegistrar, srv CallScrapeServiceServer) {
+	s.RegisterService(&CallScrapeService_ServiceDesc, srv)
 }
 
-func _AddService_Add_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _CallScrapeService_CallScrape_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AddServiceServer).Add(ctx, in)
+		return srv.(CallScrapeServiceServer).CallScrape(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.AddService/Add",
+		FullMethod: "/proto.CallScrapeService/CallScrape",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AddServiceServer).Add(ctx, req.(*Request))
+		return srv.(CallScrapeServiceServer).CallScrape(ctx, req.(*Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// AddService_ServiceDesc is the grpc.ServiceDesc for AddService service.
+// CallScrapeService_ServiceDesc is the grpc.ServiceDesc for CallScrapeService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var AddService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "proto.AddService",
-	HandlerType: (*AddServiceServer)(nil),
+var CallScrapeService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "proto.CallScrapeService",
+	HandlerType: (*CallScrapeServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Add",
-			Handler:    _AddService_Add_Handler,
+			MethodName: "CallScrape",
+			Handler:    _CallScrapeService_CallScrape_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

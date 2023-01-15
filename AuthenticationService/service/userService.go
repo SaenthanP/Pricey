@@ -5,6 +5,8 @@ import (
 	"authenticationservice/model"
 	"authenticationservice/repository"
 	"fmt"
+
+	"github.com/gofrs/uuid"
 )
 
 type UserService struct {
@@ -27,8 +29,12 @@ func (userService *UserService) CreateUser(userToCreate *dto.CreateUserDto) stri
 
 	user = userService.userRepository.LoginUser(user.Email)
 	fmt.Println(user.UserId)
-	token := user.GenerateJwt()
+	token := GenerateJwt(user)
 	fmt.Println(token)
 
 	return token
+}
+
+func (userService *UserService) TokenCheck(token string) (bool, uuid.UUID) {
+	return VerifyJwt(token)
 }

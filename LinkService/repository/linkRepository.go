@@ -35,3 +35,10 @@ func (linkRepository *LinkRepository) CreateLink(approvedUrl *model.ApprovedLink
 
 	return link
 }
+
+func (linkRepository *LinkRepository) GetAllLinks() []model.Link {
+	links := []model.Link{}
+	linkRepository.db.Preload("ApprovedLink").Find(&links)
+
+	return links
+}

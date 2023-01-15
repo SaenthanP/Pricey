@@ -1,14 +1,17 @@
 package asyncmessaging
 
 import (
+	"encoding/json"
 	"fmt"
+	"linkservice/model"
 	"log"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
 type AsyncMessageClient struct {
-	producer *kafka.Producer
+	producer      *kafka.Producer
+	delivery_chan chan kafka.Event
 }
 
 func NewAsyncMessageClient() *AsyncMessageClient {
@@ -20,17 +23,22 @@ func NewAsyncMessageClient() *AsyncMessageClient {
 	if err != nil {
 		fmt.Printf("Producer could not be created: %v", err)
 	}
-	return &AsyncMessageClient{p}
-}
-
-func (messageClient AsyncMessageClient) CallScrape() {
-	topic := "test"
 	delivery_chan := make(chan kafka.Event, 10000)
 
-	err := messageClient.producer.Produce(&kafka.Message{
+	return &AsyncMessageClient{p, delivery_chan}
+}
+
+func (messageClient AsyncMessageClient) CallScrape(linkToScrape model.Link) {
+	topic := "scrape"
+	linkJson, err := json.Marshal(linkToScrape)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = messageClient.producer.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: int32(kafka.PartitionAny)},
-		Value:          []byte("val")},
-		delivery_chan,
+		Value:          linkJson},
+		messageClient.delivery_chan,
 	)
 
 	if err != nil {

@@ -9,3 +9,5 @@ type WorkerPool struct {
 	//Results???
 
 }
+
+type Executor func([]byte, string)

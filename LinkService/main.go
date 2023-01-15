@@ -13,9 +13,6 @@ import (
 )
 
 func main() {
-
-	syncmessaging.SetupGrpc()
-
 	asyncMessagingClient := asyncmessaging.NewAsyncMessageClient()
 
 	db := database.SetDB()

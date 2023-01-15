@@ -1,22 +1,26 @@
 package service
 
 import (
+	"context"
 	"fmt"
+	jobtype "jobservice/constants"
 	"jobservice/model"
+	"jobservice/proto"
 	"jobservice/repository"
-	"jobservice/constants"
+	"log"
 	"time"
 )
 
 type JobService struct {
+	protoClient   proto.CallScrapeServiceClient
 	jobRepository *repository.JobRepository
 	ticker        *time.Ticker
 }
 
-func NewJobService(jobRepository *repository.JobRepository) *JobService {
+func NewJobService(protoClient proto.CallScrapeServiceClient, jobRepository *repository.JobRepository) *JobService {
 	t := time.NewTicker(5 * time.Second)
 
-	return &JobService{jobRepository, t}
+	return &JobService{protoClient, jobRepository, t}
 }
 
 func (jobService *JobService) Test() {
@@ -24,6 +28,9 @@ func (jobService *JobService) Test() {
 }
 
 func (jobService *JobService) RetrieveJobs() {
+	req := &proto.Request{}
+
+	jobService.protoClient.CallScrape(context.Background(), req)
 	go func() {
 		for {
 			select {
@@ -32,11 +39,17 @@ func (jobService *JobService) RetrieveJobs() {
 				for index := 0; index < len(jobsToRun); index++ {
 					switch jobsToRun[index].JobType {
 					case jobtype.SCRAPE:
-						fmt.Println("test to run")
+						req := &proto.Request{}
+
+						if _, err := jobService.protoClient.CallScrape(context.Background(), req); err == nil {
+							jobService.jobRepository.UpdateLastRunByJob(jobsToRun[index])
+						} else {
+							log.Fatalf("Something went wrong with executing scrape job: %v", err)
+						}
 					}
 					/*
-					Update last run timestamp
-					Delete jobs that are not repeatable
+						Update last run timestamp
+						Delete jobs that are not repeatable
 					*/
 				}
 			}

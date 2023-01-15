@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"scrapeservice/model"
+	"scrapeservice/service"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
@@ -15,14 +16,14 @@ var _workerPool *model.WorkerPool
 func NewAsyncMessageClient(workerPool *model.WorkerPool) {
 	consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers": "localhost:9092",
-		"group.id":          "foo",
+		"group.id":          "scrape-consumer-group",
 		"auto.offset.reset": "smallest"})
 
 	if err != nil {
 		log.Fatalf("Consumer could not be created: %v", err)
 	}
 
-	err = consumer.Subscribe("test", nil)
+	err = consumer.Subscribe("scrape", nil)
 
 	if err != nil {
 		log.Fatalf("Consumer could not be created: %v", err)
@@ -31,7 +32,7 @@ func NewAsyncMessageClient(workerPool *model.WorkerPool) {
 	_consumer = consumer
 	_workerPool = workerPool
 
-	log.Println("Started consumer, and subscribed to topic: test")
+	log.Println("Started consumer, and subscribed to topic: scrape")
 
 	go ConsumerPolling()
 }
@@ -44,7 +45,7 @@ func ConsumerPolling() {
 		switch e := ev.(type) {
 		case *kafka.Message:
 			log.Printf("RECEIVED %s\n", string(e.Value))
-			job := model.Job{JobType: string(e.Value), Executor: nil}
+			job := model.Job{JobType: "scrape", Executor: service.Exec, MetaData: e.Value}
 			_workerPool.Jobs <- job
 			// application-specific processing
 		case kafka.Error:

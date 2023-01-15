@@ -1,7 +1,7 @@
 package service
 
 import (
-	"log"
+	"encoding/json"
 	"scrapeservice/model"
 	"sync"
 	"time"
@@ -16,10 +16,21 @@ func NewWorkerPool(maxWorkers int) *model.WorkerPool {
 func Worker(jobs chan model.Job) {
 	for {
 		select {
-		case <-jobs:
-			log.Println("Worker called")
+		case job := <-jobs:
+			job.Executor(job.MetaData, job.JobType)
 			time.Sleep(10 * time.Second)
 
 		}
 	}
+}
+
+var Exec = model.Executor(func(data []byte, jobType string) {
+	if jobType == "scrape" {
+		scrapeLink(data)
+	}
+})
+
+func scrapeLink(data []byte) {
+	link := model.Link{}
+	json.Unmarshal(data, &link)
 }

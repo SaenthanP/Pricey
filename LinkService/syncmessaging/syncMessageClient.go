@@ -12,23 +12,25 @@ import (
 )
 
 type server struct {
-	proto.AddServiceServer
+	proto.CallScrapeServiceServer
 }
 
 var _linkService *service.LinkService
 
 func NewSyncMessageClient(linkService *service.LinkService) {
 	_linkService = linkService
+	setupGrpc()
+
 }
 
-func SetupGrpc() {
+func setupGrpc() {
 	listener, err := net.Listen("tcp", "localhost:9001")
 	if err != nil {
 		fmt.Printf("GRPC connection failed: %v", err)
 	}
 	grpcServer := grpc.NewServer()
 
-	proto.RegisterAddServiceServer(grpcServer, &server{})
+	proto.RegisterCallScrapeServiceServer(grpcServer, &server{})
 	//Needed to seriealize and deserialize data
 	reflection.Register(grpcServer)
 
@@ -39,9 +41,8 @@ func SetupGrpc() {
 	}()
 }
 
-func (s *server) Add(ctx context.Context, request *proto.Request) (*proto.Response, error) {
-	a, b := request.GetA(), request.GetB()
-	result := a + b
-	_linkService.TestCallFromRpc()
-	return &proto.Response{Result: result}, nil
+func (s *server) CallScrape(ctx context.Context, request *proto.Request) (*proto.Response, error) {
+	_linkService.ScrapeJob()
+	
+	return &proto.Response{Result: 1}, nil
 }

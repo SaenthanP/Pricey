@@ -49,7 +49,11 @@ func (linkService *LinkService) CreateLink(createLinkDto *dto.CreateLinkDto, use
 	return linkFromDb, ""
 }
 
-func (linkService *LinkService) TestCallFromRpc() {
-	log.Println("TestCallFromRpc")
-	linkService.asyncMessagingClient.CallScrape()
+func (linkService *LinkService) ScrapeJob() {
+	log.Println("Scrape Job Called")
+	links := linkService.linkRepository.GetAllLinks()
+
+	for _, element := range links {
+		linkService.asyncMessagingClient.CallScrape(element)
+	}
 }
